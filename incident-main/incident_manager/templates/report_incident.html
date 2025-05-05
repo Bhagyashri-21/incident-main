@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Report New Incident</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- AdminLTE CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.1.0/css/adminlte.min.css">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            margin-top: 50px;
+        }
+        .card {
+            border: none;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+            max-width: 600px; /* Reduced the width for a more compact layout */
+            margin: 0 auto; /* Center the card horizontally */
+        }
+        .card-header {
+            background-color: #007bff; /* AdminLTE primary color */
+            color: #fff;
+            text-align: center; /* Center align text */
+            padding: 10px; /* Add padding */
+        }
+        .card-body {
+            background: #ffffff;
+            padding: 20px;
+        }
+        .form-group label {
+            font-weight: bold;
+        }
+        .form-control {
+            width: 100%;
+            font-size: 0.875rem; /* Adjusted smaller font size */
+        }
+        .custom-select {
+            width: 100%;
+            font-size: 0.875rem; /* Adjusted smaller font size */
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+            width: 100%;
+        }
+        .btn-primary:hover {
+            background-color: #0069d9;
+            border-color: #0062cc;
+        }
+        textarea.form-control {
+            height: 120px; /* Reduced height for textarea */
+            font-size: 0.875rem; /* Adjusted smaller font size */
+        }
+    </style>
+</head>
+<body class="hold-transition sidebar-mini layout-fixed">
+    <div class="wrapper">
+
+        <!-- Navbar -->
+        <nav class="main-header navbar navbar-expand navbar-dark navbar-primary">
+            <!-- Left navbar links -->
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" data-widget="pushmenu" href="#"><i class="fas fa-bars"></i></a>
+                </li>
+                <li class="nav-item d-none d-sm-inline-block">
+                    <a href="#" class="nav-link">Home</a>
+                </li>
+            </ul>
+
+            <!-- Right navbar links -->
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a id="logoutButton" class="nav-link" href="#">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <!-- /.navbar -->
+
+        <!-- Main Sidebar Container -->
+        <aside class="main-sidebar sidebar-dark-primary elevation-4">
+            <!-- Brand Logo -->
+            <a href="#" class="brand-link">
+                <span class="brand-text font-weight-light">AdminLTE 3</span>
+            </a>
+
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <!-- Sidebar Menu -->
+                <nav class="mt-2">
+                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                        <!-- Add your sidebar content here -->
+                        <li class="nav-item">
+                            <a href="/add-company" class="nav-link">
+                                <i class="nav-icon fas fa-building"></i>
+                                <p>Add New Company</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/company-details/" class="nav-link">
+                                <i class="nav-icon fas fa-list"></i>
+                                <p>View All Companies</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/report-incident" class="nav-link">
+                                <i class="nav-icon fas fa-exclamation-triangle"></i>
+                                <p>Report New Incident</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/incident-details/" class="nav-link">
+                                <i class="nav-icon fas fa-list-alt"></i>
+                                <p>View All Incidents</p>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+                <!-- /.sidebar-menu -->
+            </div>
+            <!-- /.sidebar -->
+        </aside>
+
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            <div class="container mt-4">
+                <div class="row justify-content-center">
+                    <div class="col-md-8">
+                        <div class="card">
+                            <div class="card-header">
+                                <h1 class="mb-0">Report New Incident</h1>
+                            </div>
+                            <div class="card-body">
+                                <form method="post" action="{% url 'report_incident' %}" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    {{ incident_form.non_field_errors }}
+
+                                    <div class="form-group">
+                                        <label for="{{ incident_form.title.id_for_label }}">Title</label>
+                                        {{ incident_form.title }}
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="{{ incident_form.severity.id_for_label }}">Severity</label>
+                                        {{ incident_form.severity }}
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="{{ incident_form.brief_description.id_for_label }}">Brief Description</label>
+                                        {{ incident_form.brief_description }}
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="companySelect">Company</label>
+                                        <select class="form-control" id="companySelect" name="company">
+                                            <option value="" selected disabled>Select Company</option>
+                                            {% for company in companies %}
+                                            <option value="{{ company.id }}">{{ company.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="attackVectorSelect">Attack Vector</label>
+                                        <select class="custom-select" id="attackVectorSelect" name="attack_vector">
+                                            <option value="" selected disabled>Select Attack Vector</option>
+                                            <option value="Network">Network</option>
+                                            <option value="Social Engineering">Social Engineering</option>
+                                            <option value="Malware">Malware</option>
+                                            <option value="Phishing">Phishing</option>
+                                            <option value="Physical">Physical</option>
+                                            <option value="Other">Other</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="{{ incident_form.description.id_for_label }}">Description</label>
+                                        {{ incident_form.description }}
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="{{ incident_form.action_to_patch.id_for_label }}">Action to Patch</label>
+                                        {{ incident_form.action_to_patch }}
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="{{ incident_form.attachment.id_for_label }}">Attachment</label>
+                                        {{ incident_form.attachment }}
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="{{ incident_form.security_researcher.id_for_label }}">Security Researcher</label>
+                                        {{ incident_form.security_researcher }}
+                                    </div>
+
+                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /.content-wrapper -->
+
+    </div>
+    <!-- ./wrapper -->
+
+    <!-- Include jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- AdminLTE JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.1.0/js/adminlte.min.js"></script>
+</body>
+</html>
